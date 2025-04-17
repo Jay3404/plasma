@@ -1,0 +1,28 @@
+[project]
+name = "plasma-predictor"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "jay",email = "the20027@naver.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi (>=0.115.12,<0.116.0)",
+    "uvicorn[standard] (>=0.34.1,<0.35.0)",
+    "scikit-learn (>=1.6.1,<2.0.0)",
+    "joblib (>=1.4.2,<2.0.0)",
+    "pandas (>=2.2.3,<3.0.0)",
+    "numpy (>=2.2.4,<3.0.0)",
+    "streamlit (>=1.44.1,<2.0.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    "python-multipart (>=0.0.20,<0.0.21)"
+]
+
+[tool.poetry]
+packages = [{include = "plasma_predictor", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
