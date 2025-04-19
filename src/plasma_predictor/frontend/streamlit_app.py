@@ -4,16 +4,16 @@ import pandas as pd # 파장 이름 로딩용
 from pathlib import Path # pathlib 임포트
 import numpy as np
 import os
+from dotenv import load_dotenv
 
-# --- 설정 ---
-# FastAPI 서버 주소 (uvicorn 실행 시 터미널에 나오는 주소)
-API_BASE_URL = "http://127.0.0.1:8000"
+load_dotenv()  # .env 읽어서 os.environ에 넣어줌
+API_URL = os.getenv("API_URL")
 
 # --- 스크립트 기준 경로 설정 ---
 # 현재 파일(streamlit_app.py)가 있는 디렉토리
 SCRIPT_DIR = Path(__file__).resolve().parent
 # 한 칸 위로 옮기기.
-PROJECT_ROOT = SCRIPT_DIR.parent.parent
+PROJECT_ROOT = SCRIPT_DIR.parent.parent.parent
 # 프로젝트 루트를 기준으로 데이터 디렉토리 및 파일 경로 조합
 DATA_DIR_NAME = "ML_Data" # 실제 디렉토리 이름과 대소문자 일치 확인!
 FILENAME = 'ML_data_for_learning_N1000.txt' # 실제 파일 이름과 대소문자 일치 확인!
@@ -45,7 +45,7 @@ def load_wavelengths(filename):
 # --- 저장된 모델 목록 가져오기 함수 ---
 def get_available_models():
     try:
-        response = requests.get(f"{API_BASE_URL}/models")
+        response = requests.get(f"{API_URL}/models")
         response.raise_for_status() # 오류 발생 시 예외 발생
         models = response.json() # [{"name": "model1.joblib"}, ...]
         model_names = ["latest"] + [m["name"] for m in models] # 최신 옵션 추가
@@ -92,7 +92,7 @@ if wavelength_labels:
         # FastAPI 예측 API 호출
         try:
             st.info("API 서버에 예측 요청 중...")
-            response = requests.post(f"{API_BASE_URL}/predict", json=predict_payload)
+            response = requests.post(f"{API_URL}/predict", json=predict_payload)
             response.raise_for_status() # HTTP 오류 발생 시 예외 발생
 
             result = response.json() # {"predicted_te": 3.5284, "model_used": "..."}
@@ -115,5 +115,5 @@ else:
     st.error("파장 정보를 로드할 수 없어 입력을 진행할 수 없습니다.")
 
 st.sidebar.header("API 서버 정보")
-st.sidebar.write(f"백엔드 API 주소: {API_BASE_URL}")
+st.sidebar.write(f"백엔드 API 주소: {API_URL}")
 st.sidebar.info("FastAPI 서버가 먼저 실행 중이어야 합니다 (`uvicorn main:app --reload`).")
